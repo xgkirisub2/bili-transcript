@@ -9,9 +9,33 @@ The tool only handles **fetching and conversion**. What you do next — summariz
 - Subtitle-first: a 20-minute video is usually processed in about one second.
 - Audio-only fallback with local [faster-whisper](https://github.com/SYSTRAN/faster-whisper) when no subtitle exists.
 - No full-video download, no frame extraction by default.
-- Ships with a Claude Code / Codex skill, designed for “send the repo URL → the agent installs it → call the skill”.
+- Ships with Claude Code / Codex skills and one-time install commands.
 
 > Unofficial project built on Bilibili web APIs. Interfaces may change. Use it for personal study and research, and comply with Bilibili's terms and local copyright law.
+
+## One-time setup (Claude Code / Codex)
+
+No clone required. Run the block for your agent, then ask: **Transcribe this Bilibili video: <link>**.
+
+**Claude Code** (v2.1.292+)
+
+```bash
+uv tool install "bili-transcript[cuda] @ git+https://github.com/xgkirisub2/bili-transcript.git"
+claude plugin install bili-transcript --marketplace xgkirisub2/bili-transcript
+```
+
+> Reload with `/reload-plugins` or restart Claude Code. Older Claude Code: run `claude plugin marketplace add xgkirisub2/bili-transcript`, then `claude plugin install bili-transcript@bili-transcript --scope user`.
+
+**Codex**
+
+```bash
+uv tool install "bili-transcript[cuda] @ git+https://github.com/xgkirisub2/bili-transcript.git"
+bili-transcript install-skill --codex
+```
+
+> Start a new Codex session after installation.
+
+Install [uv](https://docs.astral.sh/uv/) first. On first use, run `bili-transcript login` and scan the QR code. Drop `[cuda]` on CPU/macOS. If `bili-transcript` is not on PATH, run `uv tool update-shell`.
 
 ## How it works
 
@@ -142,50 +166,9 @@ Input formats: full URL, `BV` id, `av` id, `b23.tv` short link, and `?p=N` for m
         audio.m4a         # only with --keep-audio
 ```
 
-## Install for AI agents
+## More install options
 
-Neither Claude Code nor Codex silently installs a skill just because a URL was pasted. The user must ask the agent to install it and approve the commands. This repository keeps that flow short via `AGENTS.md` and a Claude Code plugin.
-
-### 1. Install the CLI (all agents)
-
-```bash
-# NVIDIA GPU
-uv tool install "bili-transcript[cuda] @ git+https://github.com/xgkirisub2/bili-transcript.git"
-
-# CPU / macOS
-uv tool install "bili-transcript @ git+https://github.com/xgkirisub2/bili-transcript.git"
-```
-
-### 2A. Claude Code: plugin marketplace (recommended)
-
-```bash
-claude plugin marketplace add xgkirisub2/bili-transcript
-claude plugin install bili-transcript@bili-transcript --scope user
-```
-
-Then run `/reload-plugins` or restart Claude Code. The skill is available as `/bili-transcript:bili-transcript`, and Claude can invoke it from its description.
-
-In a Claude Code session:
-
-```text
-/plugin marketplace add xgkirisub2/bili-transcript
-/plugin install bili-transcript@bili-transcript
-```
-
-The plugin provides the skill; the CLI still needs `uv tool install`.
-
-### 2B. Codex
-
-```bash
-bili-transcript install-skill --codex
-```
-
-Writes:
-
-- `~/.codex/skills/bili-transcript/SKILL.md`
-- `~/.agents/skills/bili-transcript/SKILL.md`
-
-### 2C. Copy the skill directly
+Select one or more skill targets:
 
 ```bash
 bili-transcript install-skill --claude
@@ -195,13 +178,7 @@ bili-transcript install-skill --project
 bili-transcript install-skill --dir /path/to/skills
 ```
 
-### 3. Verify and log in
-
-```bash
-bili-transcript doctor
-```
-
-The first login still requires a phone scan. The agent can run `login --qr-only`, show `~/.bili-transcript/config/login_qr.png`, then run `login --poll`.
+> Neither Claude Code nor Codex silently installs a skill just because a URL was pasted. The user must ask the agent to install it and approve the commands. See `AGENTS.md` for the full agent workflow.
 
 ## Performance and storage
 

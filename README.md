@@ -9,9 +9,33 @@
 - 字幕优先：直接抓 B 站 CC/AI 字幕，20 分钟视频通常 1 秒级完成。
 - 无字幕才下载音频，用本地 [faster-whisper](https://github.com/SYSTRAN/faster-whisper) 转写。
 - 不为了转写下载完整视频，也不默认抽帧。
-- 内置 Claude Code / Codex Skill，支持“发仓库链接 → agent 自动安装 → 直接调用”。
+- 内置 Claude Code / Codex Skill，提供一次性安装命令。
 
 > 非官方工具，使用 B 站 Web API。接口可能变化；请遵守 B 站用户协议和当地版权法规，仅用于个人学习与研究。
+
+## 一次性安装（Claude Code / Codex）
+
+不需要克隆仓库。复制对应的一组命令，装完直接对 agent 说：**转写这个 B 站视频：<链接>**。
+
+**Claude Code**（v2.1.292+）
+
+```bash
+uv tool install "bili-transcript[cuda] @ git+https://github.com/xgkirisub2/bili-transcript.git"
+claude plugin install bili-transcript --marketplace xgkirisub2/bili-transcript
+```
+
+> 装完执行 `/reload-plugins` 或重启 Claude Code。旧版本 Claude Code：先 `claude plugin marketplace add xgkirisub2/bili-transcript`，再 `claude plugin install bili-transcript@bili-transcript --scope user`。
+
+**Codex**
+
+```bash
+uv tool install "bili-transcript[cuda] @ git+https://github.com/xgkirisub2/bili-transcript.git"
+bili-transcript install-skill --codex
+```
+
+> 装完新开一个 Codex 会话。
+
+需要先安装 [uv](https://docs.astral.sh/uv/)。首次使用运行一次 `bili-transcript login`，用手机 B 站 App 扫码。没有 NVIDIA GPU 或使用 macOS 时，把 `[cuda]` 去掉；如果 `bili-transcript` 不在 PATH，运行 `uv tool update-shell`。
 
 ## 工作原理
 
@@ -181,66 +205,19 @@ bili-transcript fetch "BV1xx411c7mD" --force
 - `ai-conclusion`：从官方 AI 总结接口中的字幕数据提取。
 - `asr:large-v3-turbo`：本地语音转写，可能有同音字错误；中文结果会自动繁转简。
 
-## 给 AI Agent 的安装说明
+## 更多安装方式
 
-Claude Code / Codex 没有“粘贴 URL 就静默安装”的内置能力。用户需要明确说“安装这个 skill”，并批准 agent 执行的命令。本仓库通过 `AGENTS.md` 和 Claude Code plugin 把步骤压到最短。
-
-### 1. 安装 CLI（所有 agent 通用）
-
-```bash
-# NVIDIA GPU
-uv tool install "bili-transcript[cuda] @ git+https://github.com/xgkirisub2/bili-transcript.git"
-
-# CPU / macOS
-uv tool install "bili-transcript @ git+https://github.com/xgkirisub2/bili-transcript.git"
-```
-
-### 2A. Claude Code：插件 marketplace（推荐）
-
-```bash
-claude plugin marketplace add xgkirisub2/bili-transcript
-claude plugin install bili-transcript@bili-transcript --scope user
-```
-
-然后在当前会话执行 `/reload-plugins`，或重启 Claude Code。Skill 会以 `/bili-transcript:bili-transcript` 出现，Claude 也可以根据描述自动调用。
-
-也可以在 Claude Code 会话里直接执行：
-
-```text
-/plugin marketplace add xgkirisub2/bili-transcript
-/plugin install bili-transcript@bili-transcript
-```
-
-插件负责提供 Skill；CLI 仍需先按上面的 `uv tool install` 安装。
-
-### 2B. Codex
-
-```bash
-bili-transcript install-skill --codex
-```
-
-会写入：
-
-- `~/.codex/skills/bili-transcript/SKILL.md`
-- `~/.agents/skills/bili-transcript/SKILL.md`
-
-### 2C. 直接复制 Skill（两种 agent 都可用）
+`install-skill` 可以只装某一个目标：
 
 ```bash
 bili-transcript install-skill --claude
 bili-transcript install-skill --codex
-bili-transcript install-skill --all        # Claude Code + Codex
-bili-transcript install-skill --project    # 当前项目的 .claude/.codex/.agents
+bili-transcript install-skill --all
+bili-transcript install-skill --project
 bili-transcript install-skill --dir /path/to/skills
 ```
 
-### 3. 检查与首次登录
-
-```bash
-bili-transcript doctor
-```
-
-首次登录仍需手机扫码；agent 可以运行 `login --qr-only`，把 `~/.bili-transcript/config/login_qr.png` 展示给用户，再运行 `login --poll`。
+> Claude Code / Codex 没有“粘贴 URL 就静默安装”的内置能力；需要用户明确说“安装这个 skill”，并批准 agent 执行的命令。`AGENTS.md` 里是给 agent 的完整步骤。
 
 ## 性能与存储
 
