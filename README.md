@@ -13,9 +13,21 @@
 
 > 非官方工具，使用 B 站 Web API。接口可能变化；请遵守 B 站用户协议和当地版权法规，仅用于个人学习与研究。
 
-## 一次性安装（Claude Code / Codex）
+## 最简单的用法：把仓库地址发给 agent
 
-不需要克隆仓库。复制对应的一组命令，装完直接对 agent 说：**转写这个 B 站视频：<链接>**。
+不需要自己复制安装命令。把下面这句话发给 Claude Code / Codex：
+
+> 请安装这个仓库里的 bili-transcript skill，并按 README / AGENTS.md 配置好：
+> https://github.com/xgkirisub2/bili-transcript
+
+agent 会读取仓库说明，安装 CLI 和 Skill；安装过程中可能会请你批准几条命令，确认即可。
+
+装好后直接说：
+
+> 转写这个 B 站视频：<链接>
+
+<details>
+<summary>手动安装（agent 无法自动完成时）</summary>
 
 **Claude Code**（v2.1.292+）
 
@@ -36,6 +48,8 @@ bili-transcript install-skill --codex
 > 装完新开一个 Codex 会话。
 
 需要先安装 [uv](https://docs.astral.sh/uv/)。首次使用运行一次 `bili-transcript login`，用手机 B 站 App 扫码。没有 NVIDIA GPU 或使用 macOS 时，把 `[cuda]` 去掉；如果 `bili-transcript` 不在 PATH，运行 `uv tool update-shell`。
+
+</details>
 
 ## 工作原理
 

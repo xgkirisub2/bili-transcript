@@ -13,9 +13,21 @@ The tool only handles **fetching and conversion**. What you do next — summariz
 
 > Unofficial project built on Bilibili web APIs. Interfaces may change. Use it for personal study and research, and comply with Bilibili's terms and local copyright law.
 
-## One-time setup (Claude Code / Codex)
+## Easiest way: send the repo URL to your agent
 
-No clone required. Run the block for your agent, then ask: **Transcribe this Bilibili video: <link>**.
+No manual commands needed. Send this to Claude Code / Codex:
+
+> Install the bili-transcript skill from this repository and configure it as described in README / AGENTS.md:
+> https://github.com/xgkirisub2/bili-transcript
+
+The agent reads the repository instructions and installs the CLI and skill. It may ask you to approve a few commands.
+
+Then ask:
+
+> Transcribe this Bilibili video: <link>
+
+<details>
+<summary>Manual install (if the agent cannot do it)</summary>
 
 **Claude Code** (v2.1.292+)
 
@@ -36,6 +48,8 @@ bili-transcript install-skill --codex
 > Start a new Codex session after installation.
 
 Install [uv](https://docs.astral.sh/uv/) first. On first use, run `bili-transcript login` and scan the QR code. Drop `[cuda]` on CPU/macOS. If `bili-transcript` is not on PATH, run `uv tool update-shell`.
+
+</details>
 
 ## How it works
 
