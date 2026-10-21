@@ -1,0 +1,18 @@
+{
+  "name": "bili-transcript",
+  "version": "0.1.0",
+  "description": "Fetch Bilibili video transcripts: subtitles first, local ASR fallback",
+  "author": {
+    "name": "xgkiri"
+  },
+  "homepage": "https://github.com/xgkirisub2/bili-transcript",
+  "license": "MIT",
+  "keywords": [
+    "bilibili",
+    "transcript",
+    "subtitle",
+    "asr",
+    "claude-code",
+    "codex"
+  ]
+}

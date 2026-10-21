@@ -1,0 +1,3 @@
+* text=auto
+bili text eol=lf
+bili.cmd text eol=crlf

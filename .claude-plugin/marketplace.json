@@ -1,0 +1,15 @@
+{
+  "name": "bili-transcript",
+  "owner": {
+    "name": "xgkirisub2"
+  },
+  "description": "Bilibili video transcript fetching and conversion",
+  "plugins": [
+    {
+      "name": "bili-transcript",
+      "source": ".",
+      "description": "Fetch Bilibili video transcripts: subtitles first, local ASR fallback",
+      "version": "0.1.0"
+    }
+  ]
+}

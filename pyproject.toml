@@ -1,0 +1,49 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "bili-transcript"
+version = "0.1.0"
+description = "Fetch Bilibili video transcripts: subtitles first, local audio ASR as fallback"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "xgkiri", email = "he2905304076@gmail.com" }]
+keywords = ["bilibili", "transcript", "subtitle", "asr", "claude-code", "codex"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Multimedia :: Video",
+    "Topic :: Text Processing",
+]
+dependencies = [
+    "bilibili-api-python>=17.4.2,<18",
+    "httpx>=0.28,<1",
+    "yt-dlp>=2026.8.19",
+    "faster-whisper>=1.2.1,<2",
+    "qrcode>=8.2",
+    "opencc-python-reimplemented>=0.1.7",
+    "av>=16.1,<17",
+]
+
+[project.optional-dependencies]
+cuda = [
+    "nvidia-cublas-cu12",
+    "nvidia-cudnn-cu12",
+    "nvidia-cuda-runtime-cu12",
+    "nvidia-cuda-nvrtc-cu12",
+]
+
+[project.scripts]
+bili-transcript = "bili_transcript.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/bili_transcript"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"skills/bili-transcript/SKILL.md" = "bili_transcript/skills/bili-transcript/SKILL.md"

@@ -1,0 +1,7 @@
+# NVIDIA CUDA 12 runtime libraries for faster-whisper on Windows/Linux.
+# Do not use this file on macOS.
+-r requirements.txt
+nvidia-cublas-cu12
+nvidia-cudnn-cu12
+nvidia-cuda-runtime-cu12
+nvidia-cuda-nvrtc-cu12

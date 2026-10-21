@@ -1,0 +1,10 @@
+# Core dependencies (CPU / macOS).
+# NVIDIA GPU users: also install requirements-cuda.txt.
+bilibili-api-python>=17.4.2,<18
+httpx>=0.28,<1
+yt-dlp>=2026.8.19
+faster-whisper>=1.2.1,<2
+qrcode>=8.2
+opencc-python-reimplemented>=0.1.7
+# PyAV 19 changes av.open() and is incompatible with faster-whisper 1.2.x.
+av>=16.1,<17

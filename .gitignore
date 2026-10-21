@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+dist/
+build/
+*.egg-info/
+
+# Local secrets / artifacts (in case BILI_TRANSCRIPT_HOME points here)
+config/credentials.json
+config/qr_pending.json
+config/login_qr.png
+login_qr*.jpg
+login_qr*.png
+.env
+
+# User data and media
+data/
+*.m4a
+*.flac
+*.wav
+*.mp3
+*.mp4
+
+# Logs and OS/editor files
+*.log
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
