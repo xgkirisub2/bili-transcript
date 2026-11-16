@@ -693,6 +693,8 @@ async def fetch_video(
                 language=language,
             )
         except Exception as exc:
+            if device == "metal":
+                raise NoTranscriptError(f"Metal 音频转写失败：{exc}") from exc
             log(f"声音转写失败（{exc}），尝试 CPU int8 重试一次。")
             try:
                 segments, asr_info = transcribe(

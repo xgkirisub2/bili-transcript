@@ -15,7 +15,7 @@ allowed-tools: Read Bash(command -v bili-transcript) Bash(bili-transcript *) Bas
 直接运行 `fetch "<链接>" --json`，不要额外加参数：
 
 - 字幕优先；无字幕才下载音频。
-- ASR：`large-v3-turbo`，`device=auto`（优先 CUDA），`language=zh`。
+- ASR：`large-v3-turbo`，`device=auto`（Apple Silicon 走 Metal/MLX，有 NVIDIA GPU 走 CUDA，否则 CPU），`language=zh`。
 - 音频流优先 `30216`（约 66 kbps）；实测 30232 流慢且会超时，已避开。
 - ASR 成功后默认删除音频；只有用户明确要求保留时才加 `--keep-audio`。
 - 有字幕时仍请求 B 站官方 AI 总结作为辅助；不需要时加 `--no-ai-summary`。
@@ -44,9 +44,11 @@ bili-transcript --version
 如果命令不存在，说明 CLI 还没安装。告诉用户按仓库 README 的安装命令执行（通常是）：
 
 ```bash
-uv tool install "bili-transcript[cuda] @ git+<repo-url>"   # NVIDIA GPU
+uv tool install "bili-transcript[cuda] @ git+<repo-url>"     # NVIDIA GPU
 # 或
-uv tool install "bili-transcript @ git+<repo-url>"         # CPU / macOS
+uv tool install "/Users/tensei/.local/share/bili-transcript-apple[apple]"  # 本机 Apple Silicon 适配版
+# 或
+uv tool install "bili-transcript @ git+<repo-url>"           # CPU / 其他 macOS / Linux
 ```
 
 也可以临时用 `uv tool run bili-transcript ...`。安装后运行一次：
@@ -84,7 +86,7 @@ bili-transcript fetch "<视频链接或 BV 号>" --json
 - `--force`：忽略缓存重新抓取；只在用户明确要求时用。
 - `--no-asr`：没有字幕就直接失败，不下载音频；只在需要快速失败时用。
 - `--keep-audio`：ASR 后保留音频；只在用户明确要求时用，默认删除。
-- `--model` / `--device` / `--language`：默认 `large-v3-turbo` / `auto` / `zh`；只在默认配置不可用或用户明确要求时修改。
+- `--model` / `--device` / `--language`：默认 `large-v3-turbo` / `auto` / `zh`；只在默认配置不可用或用户明确要求时修改。`--device` 可选 `auto`/`cuda`/`cpu`/`metal`。
 
 退出码：
 
@@ -129,6 +131,7 @@ bili-transcript fetch "<视频链接或 BV 号>" --json
 - **多 P 视频**：用户没指定时默认第 1 P，并在汇报中说明；需要其他 P 用 `-p N`。
 - **缓存**：同一 BV/分P 再次运行会复用 `~/.bili-transcript/data/<BV>/p<N>/`；用户要求重新抓取时加 `--force`。
 - **登录过期**：重新执行 `login --qr-only` + `login --poll`。
-- **视频没有字幕**：脚本会自动下载音频并用 GPU 转写；没有 NVIDIA GPU 时回退 CPU，会明显变慢。
+- **视频没有字幕**：脚本会自动下载音频并用本地 ASR 转写。Apple Silicon 走 Metal/MLX（`device=auto` 自动启用）；有 NVIDIA GPU 走 CUDA；否则回退 CPU（明显变慢）。
+- **本机适配版**：源码在 `~/.local/share/bili-transcript-apple`；上游尚未包含本地 Metal 改动。`--device metal` 失败时直接报错，避免悄悄退回慢速 CPU；`auto` 保留 CPU 兜底。首次 MLX 模型下载与实际推理耗时分开看。
 - **不要在总结阶段用 yt-dlp 下载完整视频**；本工具只需要字幕或音频。
 - **存储**：默认 ASR 后删除音频；需要保留时用 `--keep-audio`。
