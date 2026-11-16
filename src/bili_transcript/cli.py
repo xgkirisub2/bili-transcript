@@ -158,6 +158,20 @@ async def run_doctor(_: argparse.Namespace) -> int:
     except Exception as exc:
         print(f"CUDA 检测失败: {exc}")
 
+    try:
+        from .asr import _is_apple_silicon, _mlx_available
+
+        if _is_apple_silicon():
+            mlx_ok = _mlx_available()
+            print(
+                "Apple Silicon: 是  "
+                f"Metal/MLX 转写: {'可用 (mlx-whisper)' if mlx_ok else '不可用 (未安装 mlx-whisper)'}"
+            )
+        else:
+            print("Apple Silicon: 否")
+    except Exception as exc:
+        print(f"Metal 检测失败: {exc}")
+
     print(f"命令行: {shutil.which('bili-transcript') or '未在 PATH 中找到'}")
     for label, path in _skill_locations().items():
         print(f"Skill {label}: {'已安装' if path.exists() else '未安装'} ({path})")
@@ -260,12 +274,16 @@ def build_parser() -> argparse.ArgumentParser:
         default=DEFAULT_KEEP_AUDIO,
         help="ASR 成功后保留下载的音频（默认删除以节省空间）",
     )
-    fetch_parser.add_argument("--model", default=DEFAULT_MODEL, help="faster-whisper 模型")
+    fetch_parser.add_argument(
+        "--model",
+        default=DEFAULT_MODEL,
+        help="faster-whisper / mlx-whisper 模型（默认 large-v3-turbo）",
+    )
     fetch_parser.add_argument(
         "--device",
         default=DEFAULT_DEVICE,
-        choices=["auto", "cuda", "cpu"],
-        help="转写设备，默认自动检测",
+        choices=["auto", "cuda", "cpu", "metal"],
+        help="转写设备，默认自动检测（Apple Silicon 上 auto 会走 Metal/MLX）",
     )
     fetch_parser.add_argument(
         "--language",
